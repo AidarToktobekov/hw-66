@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
 
@@ -5,9 +6,7 @@ const Header = () => {
     <>
         <div className="bg-dark py-2">
             <div className="container">
-                <h1 className="text-light text-center">
-                    Colorie Tracker
-                </h1>
+                <NavLink to="/" className='text-light text-center fs-1 mx-auto d-block text-decoration-none'>Colorie Tracker</NavLink>
             </div>
         </div>
     </>

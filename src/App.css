@@ -7,7 +7,7 @@
     background: rgba(0, 0, 0, 0.3);
   
     display: block; 
-  
+    z-index: 3;
   }
 
 
