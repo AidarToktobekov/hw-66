@@ -1,6 +1,7 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import axiosApi from "../../axios-api";
+import ButtonSpinner from "../Spinner/Spinner";
 
 const Form=()=>{
 
@@ -11,16 +12,16 @@ const Form=()=>{
     const [meal, setMeal] = useState('');
     const [calories, setCalories] = useState('');
     const [loading, setLoading] = useState(false);
+    const [date, setDate] = useState<Date>();
 
     const getListMeal = async()=>{
         setLoading(true);
         try {
             const response = await axiosApi.get('/meals/'+ param.id +'.json');
-            console.log(response.data);
-            setTime(response.data.time)
-            setMeal(response.data.meal)
-            setCalories(String(response.data.calories))
-            
+            setTime(response.data.time);
+            setMeal(response.data.meal);
+            setCalories(String(response.data.calories));
+            setDate(response.data.date);
         } finally {
             setLoading(false);
         }
@@ -32,7 +33,7 @@ const Form=()=>{
         title = 'Edit';
         useEffect(()=>{
             void getListMeal();
-        }, [param.id])
+        }, [param.id]);
     }
 
  
@@ -45,7 +46,7 @@ const Form=()=>{
         setLoading(true);
         try {
             if (meal.trim() === '' || meal.trim() === null || calories.trim() === '' || calories.trim() === null) {
-                alert('Заполните поля ниже!')
+                alert('Заполните поля ниже!');
             }
             else{
                 if (param.id === undefined) {                
@@ -53,15 +54,17 @@ const Form=()=>{
                         time: time,
                         calories: Number(calories),
                         meal: meal,
+                        date: new Date(),
                     }
                     const response = await axiosApi.post('/meals.json', newMeal);
-                    navigate('/')
+                    navigate('/');
                 }
                 else{
                     const newMeal = {
                         time: time,
                         calories: Number(calories),
                         meal: meal,
+                        date: date,
                     }
                     const response = await axiosApi.put('/meals/' + param.id + '.json', newMeal);
                 }
@@ -79,7 +82,7 @@ const Form=()=>{
                 <div className="loader"></div>
               </div>
           </>
-        )
+        );
     }
 
     return(
@@ -102,7 +105,10 @@ const Form=()=>{
                         <label className="form-label">Calories</label>
                         <input type="number" value={calories} onChange={(event:ChangeEvent<HTMLInputElement>)=>{getValue(event, setCalories)}} min="1" className="form-control"/>
                     </div> 
-                    <button type="submit" className="btn btn-dark">Save</button>
+                    <button type="submit" className="btn btn-dark" disabled={loading}>
+                        {loading && <ButtonSpinner/>}
+                        {loading ? 'Update' : 'Save'}
+                    </button>
                     <NavLink to="/" className='ms-3 btn btn-danger'>Exit</NavLink>
                 </div>
             </form>

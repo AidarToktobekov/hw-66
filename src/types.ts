@@ -3,4 +3,5 @@ export interface Meals{
     calories: number;
     time: string;
     id: string;
+    date: Date;
 }
